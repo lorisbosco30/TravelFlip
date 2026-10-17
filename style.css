@@ -1,0 +1,789 @@
+/* ==========================================================================
+   === 1. VARIABILI CSS (:root) E RESET GENERALE ===
+   Definizione dei token di design: colori monocromatici, font, raggi e ombre
+   ========================================================================== */
+:root {
+  /* Palette Colori (Achromatic Blueprint secondo DESIGN.md) */
+  --color-bg-canvas: #f1f4f7;
+  --color-surface: #ffffff;
+  --color-surface-dim: #f8f9fa;
+  --color-surface-input: #f1f4f7;
+  --color-surface-input-border: rgba(120, 115, 115, 0.22);
+  --color-text-primary: #111111;
+  --color-text-body: #212529;
+  --color-text-muted: #787373;
+  --color-text-subtle: #9ba1a6;
+  --color-icon-box: #1e2022;
+  --color-badge-climate: #2d3134;
+  --color-border-card: rgba(120, 115, 115, 0.25);
+  --color-border-focus: #111111;
+
+  /* Tipografia */
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Raggi di curvatura (Border Radius) */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Ombre */
+  --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.03);
+  --shadow-dropdown: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Reset base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg-canvas);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   === 2. STRUTTURA LAYOUT (MOBILE-FIRST E CENTRATURA SU DESKTOP) ===
+   ========================================================================== */
+.app-viewport {
+  width: 100%;
+  max-width: 420px;
+  min-height: 100vh;
+  background-color: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
+}
+
+/* Barra di stato superiore simulata in stile smartphone */
+.status-bar {
+  height: 44px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-text-primary);
+  user-select: none;
+  z-index: 10;
+}
+
+.status-bar-time {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.status-bar-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-bar-icons .material-symbols-rounded {
+  font-size: 15px;
+}
+
+/* Contenuto principale */
+.app-main {
+  flex: 1;
+  padding: 4px 18px 24px 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   === 3. HEADER & MENU SELETTORE ORIGINE ===
+   ========================================================================== */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0 14px 0;
+  position: relative;
+  z-index: 40;
+}
+
+.brand-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brand-title {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+.brand-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-text-primary);
+  margin-top: 2px;
+}
+
+.brand-subtitle {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin-top: 1px;
+}
+
+/* Pulsante Selettore Paese di Origine */
+.origin-selector-wrap {
+  position: relative;
+}
+
+.origin-pill-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(120, 115, 115, 0.3);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: var(--shadow-subtle);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.origin-pill-btn:hover {
+  background-color: var(--color-surface-dim);
+}
+
+.origin-pill-btn .material-symbols-rounded {
+  font-size: 16px;
+  color: var(--color-text-muted);
+  transition: transform 0.2s ease;
+}
+
+.origin-pill-btn.open .material-symbols-rounded {
+  transform: rotate(180deg);
+}
+
+/* Menu a tendina per l'origine */
+.origin-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  width: 156px;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-dropdown);
+  border: 1px solid rgba(120, 115, 115, 0.2);
+  padding: 6px;
+  z-index: 50;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.origin-dropdown.show {
+  display: flex;
+  animation: fadeInDropdown 0.18s ease-out;
+}
+
+@keyframes fadeInDropdown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-header-label {
+  padding: 6px 10px 4px 10px;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--color-text-body);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease;
+}
+
+.dropdown-item:hover {
+  background-color: var(--color-surface-dim);
+}
+
+.dropdown-item.active {
+  background-color: var(--color-surface-dim);
+  color: var(--color-text-primary);
+}
+
+.dropdown-item .material-symbols-rounded {
+  font-size: 14px;
+}
+
+/* ==========================================================================
+   === 4. SOTTO-TESTATA & GLOBO WIREFRAME INTERATTIVO ===
+   ========================================================================== */
+.destination-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2px;
+  margin-bottom: 4px;
+  user-select: none;
+}
+
+.dest-meta-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.dest-meta-coords {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pulsing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-text-primary);
+  display: inline-block;
+  animation: pulseAnimation 2s infinite ease-in-out;
+}
+
+@keyframes pulseAnimation {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.4; }
+}
+
+/* Sezione Globo Wireframe */
+.globe-stage {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0 6px 0;
+  user-select: none;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.globe-stage:active {
+  cursor: grabbing;
+}
+
+.globe-svg {
+  width: 250px;
+  height: 250px;
+  overflow: visible;
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Elementi vettoriali del globo */
+.globe-outer-ring {
+  fill: var(--color-surface);
+  stroke: var(--color-text-primary);
+  stroke-width: 1.5;
+}
+
+.globe-meridian-prime {
+  stroke: var(--color-text-primary);
+  stroke-width: 1;
+}
+
+.globe-wire {
+  fill: none;
+  stroke: #c4c7c7;
+  stroke-width: 0.9;
+}
+
+.globe-wire.dashed {
+  stroke-dasharray: 3.5, 3.5;
+}
+
+.continent-shape {
+  fill: var(--color-text-primary);
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Pin e Tag della Destinazione */
+.globe-target-group {
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.target-ring {
+  fill: none;
+  stroke: var(--color-text-primary);
+  stroke-width: 1.8;
+  stroke-dasharray: 24;
+  stroke-dashoffset: 4;
+}
+
+.target-center-dot {
+  fill: var(--color-text-primary);
+}
+
+.target-badge-bg {
+  fill: var(--color-text-primary);
+}
+
+.target-badge-text {
+  fill: var(--color-surface);
+  font-family: var(--font-family);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* Ombra morbida sotto al globo */
+.globe-shadow {
+  width: 130px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0) 70%);
+  margin-top: -6px;
+  margin-bottom: 8px;
+}
+
+/* ==========================================================================
+   === 5. SCHEDA DESTINAZIONE E PULSANTE INVERSIONE/SWAP ===
+   ========================================================================== */
+.destination-summary-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-xl);
+  padding: 10px 14px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.1s ease;
+}
+
+.destination-summary-card:hover {
+  border-color: rgba(120, 115, 115, 0.4);
+}
+
+.dest-info-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dest-icon-box {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-input);
+  border: 1px solid rgba(120, 115, 115, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-primary);
+  flex-shrink: 0;
+}
+
+.dest-icon-box .material-symbols-rounded {
+  font-size: 18px;
+}
+
+.dest-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.dest-country-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.dest-units-subtitle {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+/* Pulsante Swap */
+.swap-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-input);
+  border: 1px solid rgba(120, 115, 115, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.swap-btn:hover {
+  background-color: var(--color-text-primary);
+  color: var(--color-surface);
+  border-color: var(--color-text-primary);
+}
+
+.swap-btn:active {
+  transform: scale(0.92);
+}
+
+.swap-btn .material-symbols-rounded {
+  font-size: 17px;
+  transition: transform 0.3s ease;
+}
+
+.swap-btn.swapped .material-symbols-rounded {
+  transform: rotate(180deg);
+}
+
+/* ==========================================================================
+   === 6. SCHEDE DI CONVERSIONE (VALUTA, TEMPERATURA, VELOCITÀ) ===
+   ========================================================================== */
+.converters-group {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 100%;
+}
+
+.conversion-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 14px;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-card);
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.2s ease;
+}
+
+.conversion-card:hover {
+  border-color: rgba(120, 115, 115, 0.45);
+}
+
+.conversion-left {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+/* Scatola icona scura */
+.category-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-icon-box);
+  color: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.category-icon-box .currency-glyph {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.category-icon-box .material-symbols-rounded {
+  font-size: 20px;
+}
+
+.conversion-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.conversion-header-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.conversion-type-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.conversion-rate-formula {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.conversion-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.converted-output-value {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+  line-height: 1.1;
+}
+
+/* Badge del Clima */
+.climate-chip {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-surface);
+  background-color: var(--color-badge-climate);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  display: inline-block;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+/* Input a pillola sulla destra */
+.input-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--color-surface-input);
+  border: 1px solid var(--color-surface-input-border);
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.input-pill:focus-within {
+  border-color: var(--color-border-focus);
+  background-color: var(--color-surface);
+}
+
+.converter-input {
+  width: 58px;
+  text-align: right;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 14.5px;
+  font-weight: 700;
+  font-family: inherit;
+  color: var(--color-text-primary);
+}
+
+/* Rimuove freccette native dagli input numerici */
+.converter-input::-webkit-outer-spin-button,
+.converter-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.converter-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.input-unit-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  user-select: none;
+}
+
+/* ==========================================================================
+   === 7. FOOTER E MODALE DI SELEZIONE DESTINAZIONE ===
+   ========================================================================== */
+.app-footer {
+  margin-top: 18px;
+  padding-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.footer-status-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-text-muted);
+}
+
+.footer-text {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+/* Modale a comparsa per cambiare Destinazione */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(2px);
+  z-index: 100;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.modal-overlay.show {
+  display: flex;
+}
+
+.modal-sheet {
+  width: 100%;
+  max-width: 420px;
+  background: var(--color-surface);
+  border-top-left-radius: var(--radius-xl);
+  border-top-right-radius: var(--radius-xl);
+  padding: 18px 18px 26px 18px;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
+  animation: slideUpSheet 0.25s ease-out;
+}
+
+@keyframes slideUpSheet {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.sheet-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background-color: #d1d5db;
+  margin: 0 auto 14px auto;
+}
+
+.sheet-title {
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-primary);
+}
+
+.dest-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dest-option-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-card);
+  background-color: var(--color-surface);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.dest-option-btn:hover {
+  background-color: var(--color-surface-dim);
+}
+
+.dest-option-btn.active {
+  background-color: var(--color-surface-dim);
+  border-color: var(--color-text-primary);
+}
+
+.dest-opt-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dest-opt-flag {
+  font-size: 18px;
+}
+
+.dest-opt-texts {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.dest-opt-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.dest-opt-sub {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.dest-opt-check {
+  font-size: 16px;
+  color: var(--color-text-primary);
+}

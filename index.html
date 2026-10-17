@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traveflip • Travel Converter</title>
+
+  <!-- Unica risorsa esterna ammessa: Google Fonts (Plus Jakarta Sans e Material Symbols Rounded) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet">
+
+  <!-- Foglio di stile CSS esterno -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ==========================================================================
+       === STRUTTURA PRINCIPALE DELL'APPLICAZIONE ===
+       ========================================================================== -->
+  <div class="app-viewport">
+
+    <!-- 1. BARRA DI STATO MOBILE -->
+    <div class="status-bar" aria-hidden="true">
+      <span class="status-bar-time" id="clock-time">9:41</span>
+      <div class="status-bar-icons">
+        <span class="material-symbols-rounded">signal_cellular_4_bar</span>
+        <span class="material-symbols-rounded">wifi</span>
+        <span class="material-symbols-rounded">battery_full</span>
+      </div>
+    </div>
+
+    <!-- 2. CORPO PRINCIPALE (MAIN) -->
+    <main class="app-main">
+
+      <!-- HEADER DELL'APP CON BRAND E SELETTORE ORIGINE -->
+      <header class="app-header">
+        <div class="brand-group">
+          <div class="brand-title-wrap">
+            <h1 class="brand-title">Traveflip</h1>
+            <span class="brand-dot"></span>
+          </div>
+          <span class="brand-subtitle">Travel Converter</span>
+        </div>
+
+        <!-- Selettore della valuta di partenza (Origine) -->
+        <div class="origin-selector-wrap">
+          <button id="origin-btn" class="origin-pill-btn" aria-label="Seleziona paese e valuta di origine">
+            <span id="origin-btn-text">🇮🇹 IT (€)</span>
+            <span class="material-symbols-rounded">expand_more</span>
+          </button>
+
+          <!-- Menu a discesa per scegliere l'origine -->
+          <div id="origin-dropdown" class="origin-dropdown" role="menu">
+            <div class="dropdown-header-label">Origine</div>
+            <button class="dropdown-item active" data-origin="ita" role="menuitem">
+              <span>🇮🇹 IT (€)</span>
+              <span class="material-symbols-rounded">check</span>
+            </button>
+            <button class="dropdown-item" data-origin="usa" role="menuitem">
+              <span>🇺🇸 USA ($)</span>
+            </button>
+            <button class="dropdown-item" data-origin="gbr" role="menuitem">
+              <span>🇬🇧 UK (£)</span>
+            </button>
+            <button class="dropdown-item" data-origin="jpn" role="menuitem">
+              <span>🇯🇵 GPN (¥)</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- SEZIONE 1: COORDINATE E GLOBO VETTORIALE WIREFRAME -->
+      <section class="destination-section" aria-label="Globo e coordinate destinazione">
+        <div class="destination-meta-row">
+          <span class="dest-meta-label">Destinazione Selezionata</span>
+          <span class="dest-meta-coords">
+            <span class="pulsing-dot"></span>
+            <span id="coords-text">40.71° N, 74.00° W</span>
+          </span>
+        </div>
+
+        <!-- Area interattiva del Globo Wireframe Blueprint -->
+        <div class="globe-stage" id="globe-interactive-area" title="Tocca o trascina per cambiare destinazione">
+          <svg class="globe-svg" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+            <!-- Definizione della maschera circolare del globo -->
+            <defs>
+              <clipPath id="globe-clip-mask">
+                <circle cx="130" cy="130" r="100" />
+              </clipPath>
+            </defs>
+
+            <!-- Sfera esterna -->
+            <circle cx="130" cy="130" r="100" class="globe-outer-ring" />
+
+            <!-- Reticolato wireframe di meridiani e paralleli -->
+            <g clip-path="url(#globe-clip-mask)">
+              <!-- Meridiano principale centrale -->
+              <line x1="130" y1="30" x2="130" y2="230" class="globe-meridian-prime" />
+
+              <!-- Meridiani curvi -->
+              <ellipse cx="130" cy="130" rx="35" ry="100" class="globe-wire" />
+              <ellipse cx="130" cy="130" rx="70" ry="100" class="globe-wire" />
+
+              <!-- Paralleli (latitudine) -->
+              <line x1="30" y1="130" x2="230" y2="130" class="globe-wire" />
+              <ellipse cx="130" cy="85" rx="95" ry="24" class="globe-wire" />
+              <ellipse cx="130" cy="55" rx="76" ry="18" class="globe-wire" />
+              <ellipse cx="130" cy="175" rx="95" ry="24" class="globe-wire dashed" />
+              <ellipse cx="130" cy="205" rx="76" ry="18" class="globe-wire dashed" />
+
+              <!-- Sagome dei continenti in silhouette monocromatica -->
+              <g id="globe-continents-group">
+                <!-- Nord America -->
+                <path class="continent-shape"
+                  d="M 80 58 Q 96 50 114 54 Q 132 50 144 62 Q 148 76 138 88 Q 134 94 126 98 Q 116 104 112 118 Q 106 128 100 138 Q 94 128 90 116 Q 78 106 72 92 Q 68 80 80 58 Z" />
+
+                <!-- Groenlandia -->
+                <path class="continent-shape" d="M 134 40 Q 146 38 150 48 Q 144 56 134 52 Z" />
+
+                <!-- Sud America -->
+                <path class="continent-shape"
+                  d="M 116 142 Q 130 146 138 160 Q 144 176 136 196 Q 128 214 122 224 Q 116 208 112 188 Q 110 168 116 142 Z" />
+
+                <!-- Europa e Africa -->
+                <path class="continent-shape"
+                  d="M 180 56 Q 194 52 200 64 Q 194 76 186 80 Q 182 90 192 102 Q 198 120 192 144 Q 184 162 176 172 Q 170 152 172 130 Q 174 98 170 82 Z" />
+
+                <!-- Asia e Giappone -->
+                <path class="continent-shape" d="M 226 52 Q 244 54 256 68 Q 248 88 238 98 Q 228 92 224 74 Z" />
+                <path class="continent-shape" d="M 252 82 Q 256 90 250 96 Q 248 88 252 82 Z" />
+
+                <!-- Australia -->
+                <path class="continent-shape" d="M 238 170 Q 252 166 256 180 Q 250 194 238 192 Q 232 182 238 170 Z" />
+              </g>
+            </g>
+
+            <!-- Cerchio di contorno superiore -->
+            <circle cx="130" cy="130" r="100" fill="none" stroke="#111111" stroke-width="1.5" />
+
+            <!-- Pin / Target e Badge della Destinazione Attiva -->
+            <g id="globe-pin-target" class="globe-target-group">
+              <circle cx="126" cy="85" r="6" class="target-ring" />
+              <circle cx="126" cy="85" r="2.2" class="target-center-dot" />
+              <line x1="131" y1="82" x2="138" y2="78" stroke="#111111" stroke-width="1.2" />
+              <rect x="138" y="68" width="70" height="20" rx="10" class="target-badge-bg" />
+              <text x="173" y="78" class="target-badge-text" id="globe-badge-text">USA (NYC)</text>
+            </g>
+          </svg>
+
+          <!-- Ombra morbida sotto il globo -->
+          <div class="globe-shadow"></div>
+        </div>
+
+        <!-- Card informativa Destinazione con Pulsante Inversione (Swap) -->
+        <div class="destination-summary-card" id="destination-card" title="Clicca per cambiare destinazione">
+          <div class="dest-info-left">
+            <div class="dest-icon-box">
+              <span class="material-symbols-rounded">flight_land</span>
+            </div>
+            <div class="dest-text-group">
+              <span class="dest-country-title" id="dest-country-name">Stati Uniti</span>
+              <span class="dest-units-subtitle" id="dest-units-summary">USD ($) • Fahrenheit (°F) • Miglia (mph)</span>
+            </div>
+          </div>
+
+          <!-- Pulsante di Swap / Inversione unità -->
+          <button id="swap-btn" class="swap-btn" aria-label="Inverti unità e valute di partenza con quelle di arrivo"
+            title="Inverti direzione di conversione">
+            <span class="material-symbols-rounded">sync_alt</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- SEZIONE 2: LE 3 SCHEDE DI CONVERSIONE IMMEDIATA -->
+      <section class="converters-group" aria-label="Campi di conversione istantanea">
+
+        <!-- 1. SCHEDA VALUTA -->
+        <div class="conversion-card">
+          <div class="conversion-left">
+            <div class="category-icon-box">
+              <span class="currency-glyph" id="currency-icon-symbol">$</span>
+            </div>
+            <div class="conversion-details">
+              <div class="conversion-header-line">
+                <span class="conversion-type-label">Valuta</span>
+                <span class="conversion-rate-formula" id="currency-rate-formula">1 EUR = 1.08 USD</span>
+              </div>
+              <div class="conversion-value-row">
+                <span class="converted-output-value" id="currency-output-val">$ 108.00</span>
+              </div>
+            </div>
+          </div>
+          <!-- Input Valuta -->
+          <div class="input-pill">
+            <label for="currency-input" class="visually-hidden" style="display:none;">Importo valuta</label>
+            <input type="number" id="currency-input" class="converter-input" value="100" step="any" min="0">
+            <span class="input-unit-label" id="currency-input-unit">EUR</span>
+          </div>
+        </div>
+
+        <!-- 2. SCHEDA TEMPERATURA -->
+        <div class="conversion-card">
+          <div class="conversion-left">
+            <div class="category-icon-box">
+              <span class="material-symbols-rounded">device_thermostat</span>
+            </div>
+            <div class="conversion-details">
+              <div class="conversion-header-line">
+                <span class="conversion-type-label">Temperatura</span>
+                <span class="conversion-rate-formula" id="temp-rate-formula">22°C = 71.6°F</span>
+              </div>
+              <div class="conversion-value-row">
+                <span class="converted-output-value" id="temp-output-val">71.6 °F</span>
+                <span class="climate-chip" id="climate-label-badge">Clima mite</span>
+              </div>
+            </div>
+          </div>
+          <!-- Input Temperatura -->
+          <div class="input-pill">
+            <label for="temp-input" class="visually-hidden" style="display:none;">Temperatura</label>
+            <input type="number" id="temp-input" class="converter-input" value="22" step="any">
+            <span class="input-unit-label" id="temp-input-unit">°C</span>
+          </div>
+        </div>
+
+        <!-- 3. SCHEDA VELOCITÀ & DISTANZA -->
+        <div class="conversion-card">
+          <div class="conversion-left">
+            <div class="category-icon-box">
+              <span class="material-symbols-rounded">directions_car</span>
+            </div>
+            <div class="conversion-details">
+              <div class="conversion-header-line">
+                <span class="conversion-type-label">Velocità &amp; Distanza</span>
+                <span class="conversion-rate-formula" id="speed-rate-formula">10 km = 6.2 mi</span>
+              </div>
+              <div class="conversion-value-row">
+                <span class="converted-output-value" id="speed-output-val">62 mph</span>
+              </div>
+            </div>
+          </div>
+          <!-- Input Velocità -->
+          <div class="input-pill">
+            <label for="speed-input" class="visually-hidden" style="display:none;">Velocità e Distanza</label>
+            <input type="number" id="speed-input" class="converter-input" value="100" step="any" min="0">
+            <span class="input-unit-label" id="speed-input-unit">km/h</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- 3. FOOTER MINIMALE -->
+      <footer class="app-footer">
+        <div class="footer-status-wrap">
+          <span class="footer-dot"></span>
+          <span class="footer-text">Aggiornato in tempo reale • Modalità offline attiva</span>
+        </div>
+      </footer>
+
+    </main>
+
+    <!-- MODALE BOTTOM SHEET PER SCEGLIERE LA DESTINAZIONE -->
+    <div id="dest-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Scegli la destinazione">
+      <div class="modal-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-title">Seleziona Destinazione</div>
+        <div class="dest-options-list" id="dest-options-container">
+          <!-- Popolato dinamicamente da JavaScript -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Logica JavaScript esterna -->
+  <script src="script.js"></script>
+</body>
+
+</html>
